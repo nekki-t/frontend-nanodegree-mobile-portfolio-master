@@ -430,7 +430,7 @@ var resizePizzas = function(size) {
   function determineDx (elem, size) {
     var oldWidth = elem.offsetWidth;
     /*--- replace to getElementById to reduce cost ---*/
-    var windowWidth = document.getElementById("#randomPizzas").offsetWidth;
+    var windowWidth = document.getElementById("randomPizzas").offsetWidth;
     // var windowWidth = document.querySelector("#randomPizzas").offsetWidth;
     var oldSize = oldWidth / windowWidth;
 
@@ -459,9 +459,11 @@ var resizePizzas = function(size) {
     /*--- querySelectorAll -> getElementsByClassName :because less cost---*/
     /*--- no need to call getElement method each time---*/
     var containers = document.getElementsByClassName("randomPizzaContainer");
-    for (var i = 0; i < containers.length; i++) {
-        var dx = determineDx(containers[i], size);
-        var newwidth = (containers[i].offsetWidth + dx) + 'px';
+    /*--- these variables are moved outside of the loop:pizza's size are the same ---*/
+    var dx = determineDx(containers[0], size);
+    var newwidth = (containers[0].offsetWidth + dx) + 'px';
+    /*--- length value is saved ---*/
+    for (var i = 0, len = containers.length; i < len; i++) {
         containers[i].style.width = newwidth;
     }
     // for (var i = 0; i < document.querySelectorAll(".randomPizzaContainer").length; i++) {
@@ -483,8 +485,9 @@ var resizePizzas = function(size) {
 window.performance.mark("mark_start_generating"); // collect timing data
 
 // This for-loop actually creates and appends all of the pizzas when the page loads
+/*--- move getElement method outside the loop ---*/
+var pizzasDiv = document.getElementById("randomPizzas");
 for (var i = 2; i < 100; i++) {
-  var pizzasDiv = document.getElementById("randomPizzas");
   pizzasDiv.appendChild(pizzaElementGenerator(i));
 }
 
@@ -523,8 +526,9 @@ function updatePositions() {
   /*--- reduce calculation cost ---*/
   var basePos = document.body.scrollTop / 1250;
 
-  for (var i = 0; i < items.length; i++) {
-    var phase = Math.sin((basePos) + (i % 5)); /*--- 3.0ms ---*/
+  /*--- added var declarations in the first sentence of the loop ---*/
+  for (var i = 0, len = items.length, phase; i < len; i++) {
+    phase = Math.sin((basePos) + (i % 5)); /*--- 3.0ms ---*/
     items[i].style.left = items[i].basicLeft + 100 * phase + 'px'; /*--- 1.0ms ---*/
   }
 
@@ -548,10 +552,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
   /*--- no need to repeat getElement method in the loop ---*/
   var target = document.getElementById("movingPizzas1");
-  
+
+  /*--- calculate optimal numbers of pizza ---*/
+  var rowHeight = 132.14;
+  var winHeight = window.screen.height;
+  var rows = winHeight / rowHeight;
+  var elementCount = parseInt(rows * cols);
+
   /*--- reduced max count from 200 to 100 because it doesn't make so much difference to users ---*/
-  for (var i = 0; i < 100; i++) {
-    var elem = document.createElement('img');
+  for (var i = 0, elem; i < elementCount; i++) {
+    elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "images/pizza.png";
     elem.style.height = "100px";

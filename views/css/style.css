@@ -46,6 +46,13 @@ form {
   clear:both;
 }
 
- .container {
+.container {
   background-color: rgba(240, 60, 60, 0.8);
+}
+
+/*--- added to trigger GPU ---*/
+.mover {
+  /*--- thanks to suggestions ---*/
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
