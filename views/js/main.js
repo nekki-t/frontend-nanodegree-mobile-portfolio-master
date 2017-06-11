@@ -559,6 +559,8 @@ document.addEventListener('DOMContentLoaded', function() {
   var rows = winHeight / rowHeight;
   var elementCount = parseInt(rows * cols);
 
+  console.log(elementCount);
+
   /*--- reduced max count from 200 to 100 because it doesn't make so much difference to users ---*/
   for (var i = 0, elem; i < elementCount; i++) {
     elem = document.createElement('img');
